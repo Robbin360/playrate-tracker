@@ -1,0 +1,24 @@
+name: rastreador diario
+
+on:
+  schedule:
+    # 11:00 UTC = 07:00 en Chile. Cron siempre va en UTC.
+    - cron: '0 11 * * *'
+  workflow_dispatch:        # botón para correrlo a mano
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run track
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SUPABASE_BUCKET:      shots

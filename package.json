@@ -1,0 +1,14 @@
+{
+  "name": "playrate-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "probe": "node src/probe.js",
+    "track": "node --env-file=.env src/track.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
