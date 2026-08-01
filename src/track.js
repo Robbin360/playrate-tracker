@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import sharp from 'sharp';
 import { db, BUCKET, today } from './db.js';
 import {
   newSession, getSorts, getSortContent, getGameDetails,
@@ -120,7 +121,16 @@ console.log('4/5 · imágenes');
 
 async function keepImage(universeId, kind, url) {
   const bytes = await fetchImageBytes(url);
-  const sha = createHash('sha256').update(bytes).digest('hex');
+
+  // El CDN de Roblox recomprime: los mismos píxeles pueden llegar como bytes
+  // distintos. Hasheamos los píxeles decodificados a 256x256 sin alfa, para que
+  // un hash nuevo signifique de verdad que el arte cambió.
+  const normalized = await sharp(bytes)
+    .resize(256, 256, { fit: 'cover', position: 'center' })
+    .removeAlpha()
+    .raw()
+    .toBuffer();
+  const sha = createHash('sha256').update(normalized).digest('hex');
 
   // ¿Ya tenemos esta versión exacta? Entonces solo marcamos que sigue vigente.
   const { data: known } = await db
