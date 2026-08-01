@@ -8,7 +8,9 @@
   },
   "scripts": {
     "probe": "node src/probe.js",
-    "track": "node --env-file=.env src/track.js"
+    "track": "node src/track.js",
+    "track:local": "node --env-file=.env src/track.js",
+    "measure": "node --env-file=.env src/measure.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
